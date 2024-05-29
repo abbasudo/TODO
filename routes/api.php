@@ -10,7 +10,6 @@ use Illuminate\Validation\ValidationException;
 
 Route::post('/login', function (Request $request) {
     $request->validate([
-        'name' => 'required_without:email',
         'email'    => 'required_without:name|email|exists:users',
         'password' => 'required',
     ]);
@@ -33,8 +32,8 @@ Route::post('/login', function (Request $request) {
 
 Route::post('/register', function (Request $request) {
     $attribute = $request->validate([
-        'email'    => 'required|string|email|unique:users',
-        'name'     => 'nullable|string|unique:users',
+        'email'    => 'required|string|email|unique:users,email',
+        'name'     => 'required|string',
         'password' => 'required|string',
     ]);
 
@@ -47,5 +46,5 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::apiResource('tasks', TaskController::class)->only(['store','update','destroy'])->middleware('auth:sanctum');
-Route::apiResource('tasks', TaskController::class)->except(['store','update','destroy']);
+Route::apiResource('tasks', TaskController::class)->middleware('auth:sanctum');
+//Route::apiResource('tasks', TaskController::class)->only(['show', 'index']);
